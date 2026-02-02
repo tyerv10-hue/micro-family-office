@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Micro Family Office Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+  <style>
+    :root {
+      --bg: #070A18;
+      --panel: #0B1028;
+      --panel-soft: #101a40;
+      --text: #EAF2FF;
+      --muted: #9FB0D0;
+
+      --purple: #9B5CFF;
+      --blue: #33D6FF;
+      --mint: #B3FFFA;
+      --pink: #FF4FD8;
+
+      --glow: 0 0 25px rgba(155,92,255,.25), 0 0 50px rgba(51,214,255,.15);
+      --border: 1px solid rgba(51,214,255,.25);
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Inter", system-ui, sans-serif;
+      background:
+        radial-gradient(900px 600px at 10% 10%, rgba(155,92,255,.25), transparent 60%),
+        radial-gradient(800px 500px at 90% 20%, rgba(51,214,255,.20), transparent 60%),
+        linear-gradient(180deg, #050716, #070A18);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 32px 20px 48px;
+    }
+
+    h1 {
+      font-size: 34px;
+      font-weight: 800;
+      margin-bottom: 6px;
+      text-shadow: var(--glow);
+    }
+
+    .subtitle {
+      color: var(--muted);
+      max-width: 820px;
+      margin-bottom: 24px;
+    }
+
+    .pill-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 30px;
+    }
+
+    .pill {
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: linear-gradient(180deg, var(--panel-soft), var(--panel));
+      border: var(--border);
+      box-shadow: var(--glow);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr .8fr;
+      gap: 18px;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: linear-gradient(180deg, var(--panel-soft), var(--panel));
+      border-radius: 18px;
+      padding: 18px;
+      border: var(--border);
+      box-shadow: var(--glow);
+    }
+
+    .card h2 {
+      margin-top: 0;
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 10px;
+    }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+
+    .chart-wrap {
+      margin-top: 14px;
+    }
+
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    @media (max-width: 700px) {
+      .kpis { grid-template-columns: 1fr; }
+    }
+
+    .kpi {
+      padding: 14px;
+      border-radius: 14px;
+      border: var(--border);
+      background: rgba(16,26,64,.6);
+    }
+
+    .kpi span {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .kpi strong {
+      font-size: 18px;
+      font-weight: 800;
+      background: linear-gradient(90deg, var(--purple), var(--blue));
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .rules {
+      display: grid;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .rule {
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255,79,216,.12);
+      border: 1px solid rgba(255,79,216,.35);
+    }
+
+    .rule strong {
+      color: #FFD6F3;
+    }
+
+    footer {
+      margin-top: 42px;
+      font-size: 12px;
+      color: var(--muted);
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>🏛️ Micro Family Office Dashboard</h1>
+    <div class="subtitle">
+      A two-engine system designed to eliminate forced selling.
+      <strong>Income funds life.</strong> <strong>Growth compounds untouched.</strong>
+    </div>
+
+    <div class="pill-row">
+      <div class="pill">🧠 Growth ≠ ATM</div>
+      <div class="pill">💵 Income funds lifestyle</div>
+      <div class="pill">🛡️ 12–24 mo runway</div>
+      <div class="pill">⚙️ Optional leverage only</div>
+    </div>
+
+    <div class="grid">
+      <!-- LEFT -->
+      <div class="card">
+        <h2>📊 Portfolio Allocation</h2>
+        <div class="muted">Target structure for a durable micro family office.</div>
+        <div class="chart-wrap">
+          <canvas id="allocation"></canvas>
+        </div>
+
+        <div class="kpis">
+          <div class="kpi">
+            <span>Primary Goal</span>
+            <strong>Freedom per risk</strong>
+          </div>
+          <div class="kpi">
+            <span>Funding Source</span>
+            <strong>Income + Liquidity</strong>
+          </div>
+          <div class="kpi">
+            <span>Growth Rule</span>
+            <strong>No withdrawals</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT -->
+      <div class="card">
+        <h2>💵 Income Engine (35%)</h2>
+        <div class="muted">Diversified, resilient cash-flow sources.</div>
+        <div class="chart-wrap">
+          <canvas id="income"></canvas>
+        </div>
+
+        <div class="rules">
+          <div class="rule"><strong>Rule #1:</strong> Growth assets are never sold to fund life.</div>
+          <div class="rule"><strong>Rule #2:</strong> Income must survive a 30–40% drop.</div>
+          <div class="rule"><strong>Rule #3:</strong> No leverage inside the income sleeve.</div>
+          <div class="rule"><strong>Rule #4:</strong> Maintain 12–24 months of runway.</div>
+          <div class="rule"><strong>Rule #5:</strong> Rebalance annually, not emotionally.</div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      Built as a micro–family office operating system · Control beats prediction
+    </footer>
+  </div>
+
+  <script>
+    const COLORS = ["#9B5CFF", "#33D6FF", "#B3FFFA", "#FF4FD8"];
+
+    new Chart(document.getElementById("allocation"), {
+      type: "doughnut",
+      data: {
+        labels: [
+          "Growth Engine 45%",
+          "Income Engine 35%",
+          "Stability & Liquidity 15%",
+          "Opportunistic 5%"
+        ],
+        datasets: [{
+          data: [45, 35, 15, 5],
+          backgroundColor: COLORS,
+          borderWidth: 2
+        }]
+      },
+      options: {
+        cutout: "68%",
+        plugins: { legend: { position: "bottom" } }
+      }
+    });
+
+    new Chart(document.getElementById("income"), {
+      type: "bar",
+      data: {
+        labels: [
+          "Covered Calls",
+          "Private Credit",
+          "Real Estate CF",
+          "PE / Alternatives"
+        ],
+        datasets: [{
+          data: [12, 8, 10, 5],
+          backgroundColor: COLORS,
+          borderRadius: 10
+        }]
+      },
+      options: {
+        indexAxis: "y",
+        plugins: { legend: { display: false } },
+        scales: {
+          x: { max: 15 }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
